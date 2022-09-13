@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/os_util/__init__.py
+src/os_util/run_command_on_files_in_dir.py
+src/rbnbr_pyutility.egg-info/PKG-INFO
+src/rbnbr_pyutility.egg-info/SOURCES.txt
+src/rbnbr_pyutility.egg-info/dependency_links.txt
+src/rbnbr_pyutility.egg-info/top_level.txt
