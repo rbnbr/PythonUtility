@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.interpolate import RegularGridInterpolator
 
 
 def fill_array_with(to_be_filled: np.array, data: np.array, offsets=None):
