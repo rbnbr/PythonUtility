@@ -38,3 +38,24 @@ def resample_array_to_shape(array: np.array, new_shape, method="linear"):
     new_grid = np.meshgrid(*new_entries, indexing='ij')
 
     return interp(tuple(new_grid)).astype(array.dtype)
+
+
+def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255)):
+    """
+    Rescales the values of x with respect to each variable of the last axis.
+
+    xp and fp are evaluated for value in range(x.shape[-1]) and called with arguments: (x[:, ..., :, i], i)
+
+    :param x: np.array
+    :param xp: func(x: np.array, index: int) -> tuple(number, number)
+    :param fp: func(x: np.array, index: int) -> tuple(number, number)
+    :return:
+    """
+    if len(x.shape) > 1:
+        x = x.swapaxes(0, -1)
+
+    for i in range(x.shape[0]):
+        x[i] = np.interp(x[i], xp=xp(x[i], i), fp=fp(x[i], i))
+
+    x = x.swapaxes(0, -1)
+    return x
