@@ -3,6 +3,8 @@ README.md
 pyproject.toml
 setup.cfg
 src/pybrutil/__init__.py
+src/pybrutil/general/__init__.py
+src/pybrutil/general/strings.py
 src/pybrutil/np_util/__init__.py
 src/pybrutil/np_util/data.py
 src/pybrutil/os_util/__init__.py
