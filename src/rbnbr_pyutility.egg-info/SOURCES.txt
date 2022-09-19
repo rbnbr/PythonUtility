@@ -11,3 +11,5 @@ src/rbnbr_pyutility.egg-info/SOURCES.txt
 src/rbnbr_pyutility.egg-info/dependency_links.txt
 src/rbnbr_pyutility.egg-info/requires.txt
 src/rbnbr_pyutility.egg-info/top_level.txt
+src/scipy_util/__init__.py
+src/scipy_util/ndim_pairwise_distance.py
