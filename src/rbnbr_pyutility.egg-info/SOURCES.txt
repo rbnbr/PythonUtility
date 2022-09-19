@@ -9,8 +9,8 @@ src/pybrutil/np_util/__init__.py
 src/pybrutil/np_util/data.py
 src/pybrutil/os_util/__init__.py
 src/pybrutil/os_util/run_command_on_files_in_dir.py
-src/pybrutil/scipy_util/__init__.py
-src/pybrutil/scipy_util/ndim_pairwise_distance.py
+src/pybrutil/sklearn_util/__init__.py
+src/pybrutil/sklearn_util/ndim_pairwise_distance.py
 src/rbnbr_pyutility.egg-info/PKG-INFO
 src/rbnbr_pyutility.egg-info/SOURCES.txt
 src/rbnbr_pyutility.egg-info/dependency_links.txt
