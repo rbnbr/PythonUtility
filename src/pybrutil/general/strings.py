@@ -8,18 +8,7 @@ def remove_except_between_chars(s: str, c_left: str, c_right: str):
     :param c_right:
     :return:
     """
-    r = ""
-    add = False
-    for j in range(len(s)):
-        if not add:
-            if s[j] == c_left:
-                add = True
-                continue
-            else:
-                continue
-        else:
-            if s[j] == c_right:
-                break
-            else:
-                r += s[j]
-    return r
+    first_left = s.find(c_left)
+    first_right = s[first_left+1:].find(c_right) + (first_left+1)
+
+    return s[first_left+1:first_right]
