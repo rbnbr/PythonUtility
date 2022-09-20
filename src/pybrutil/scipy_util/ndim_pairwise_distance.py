@@ -1,5 +1,5 @@
 import numpy as np
-import sklearn
+from scipy.spatial.distance import pdist, squareform
 
 
 def flatten_extra_dimensions(x: np.ndarray):
@@ -68,7 +68,14 @@ def metric_wrapper(shapes: list, metric_fn):
     return w
 
 
-def pairwise_distance(ensemble: list[np.array], metric=np.linalg.norm, precompute=None):
+def pairwise_distance(ensemble: list, metric=np.linalg.norm, precompute=None):
+    """
+    Compute pairwise distance between elements in ensemble
+    :param ensemble: list of np.array
+    :param metric:
+    :param precompute:
+    :return:
+    """
     # perform possible precomputations of the metric to avoid this in during the pairwise distance metric
     if precompute is not None:
         ensemble = map(precompute, ensemble)
@@ -84,10 +91,10 @@ def pairwise_distance(ensemble: list[np.array], metric=np.linalg.norm, precomput
     # flatten all dimensions
     e_flat = [e.flatten() for e in ensemble]
 
-    # make it rectangular to be applicable to sklearn pdist
+    # make it rectangular to be applicable to pdist
     e_rect = transform_to_rect_flat_array(e_flat)
 
     # compute pairwise distances
-    sim_mat = sklearn.metrics.squareform(sklearn.metrics.pdist(e_rect, metric=metric_wrapper(shapes, metric)))
+    sim_mat = squareform(pdist(e_rect, metric=metric_wrapper(shapes, metric)))
 
     return sim_mat
