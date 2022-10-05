@@ -40,7 +40,7 @@ def resample_array_to_shape(array: np.array, new_shape, method="linear"):
     return interp(tuple(new_grid)).astype(array.dtype)
 
 
-def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255), in_place=True):
+def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255), in_place=False):
     """
     Rescales the values of x with respect to each variable of the last axis.
 
