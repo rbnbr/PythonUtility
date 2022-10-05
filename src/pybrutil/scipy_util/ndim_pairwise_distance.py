@@ -78,7 +78,7 @@ def pairwise_distance(ensemble: list, metric=np.linalg.norm, precompute=None):
     """
     # perform possible precomputations of the metric to avoid this in during the pairwise distance metric
     if precompute is not None:
-        ensemble = map(precompute, ensemble)
+        ensemble = list(map(precompute, ensemble))
 
     # handle scalars
     for i in range(len(ensemble)):
