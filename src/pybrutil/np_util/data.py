@@ -40,17 +40,21 @@ def resample_array_to_shape(array: np.array, new_shape, method="linear"):
     return interp(tuple(new_grid)).astype(array.dtype)
 
 
-def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255)):
+def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255), in_place=True):
     """
     Rescales the values of x with respect to each variable of the last axis.
 
     xp and fp are evaluated for value in range(x.shape[-1]) and called with arguments: (x[:, ..., :, i], i)
 
+    :param in_place: if not in_place, calls x.copy() before altering x.
     :param x: np.array
     :param xp: func(x: np.array, index: int) -> tuple(number, number)
     :param fp: func(x: np.array, index: int) -> tuple(number, number)
     :return:
     """
+    if in_place:
+        x = x.copy()
+
     if len(x.shape) > 1:
         x = x.swapaxes(0, -1)
 
