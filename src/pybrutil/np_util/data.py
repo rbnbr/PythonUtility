@@ -52,14 +52,10 @@ def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda 
     :param fp: func(x: np.array, index: int) -> tuple(number, number)
     :return:
     """
-    if in_place:
+    if not in_place:
         x = x.copy()
 
-    if len(x.shape) > 1:
-        x = x.swapaxes(0, -1)
+    for i in range(x.shape[-1]):
+        x[..., i] = np.interp(x[..., i], xp=xp(x[..., i], i), fp=fp(x[..., i], i))
 
-    for i in range(x.shape[0]):
-        x[i] = np.interp(x[i], xp=xp(x[i], i), fp=fp(x[i], i))
-
-    x = x.swapaxes(0, -1)
     return x
