@@ -47,7 +47,7 @@ def metric_wrapper(shapes: list, metric_fn):
     """
     Scipy pairwise distance expects a feature vector but in my use cases, sometimes the feature is a matrix.
     Thus before calling the scipy pdist function, I flatten the array but then I will need to bring it back in original shape before applying the actual metric.
-    This wrapper returns a metric which expects a flattened ndarray and will reshape it back to the given shape before calling the actual metric.
+    This wrapper returns a metric which expects two flattened ndarray and will reshape them back to the given shape before calling the actual metric.
 
     The returned function expects input from transform_to_rect_flat_array(..).
     """
@@ -68,11 +68,33 @@ def metric_wrapper(shapes: list, metric_fn):
     return w
 
 
-def pairwise_distance(ensemble: list, metric=np.linalg.norm, precompute=None):
+def metric_wrapper_with_closure(ensemble: list, metric_fn):
+    """
+    Scipy pairwise distance expects a feature vector but in my use cases, sometimes the feature is a matrix.
+    Thus, I give scipy just a vector of [0, 1, 2, ..., length_of_ensemble-1] and retrieve the actual data provided by this id.
+    This wrapper returns a metric which expects two indices which are then used to retrieve the actual data to finally call the actual metric.
+
+    The returned function expects input from np.arange(length_of_ensemble).reshape(length_of_ensemble, 1).
+    """
+    def w(x_idx, y_idx):
+        # reverse transform_to_rect_flat_array changes
+        x_i = int(x_idx.item())
+        y_i = int(y_idx.item())
+
+        x = ensemble[x_i]
+        y = ensemble[y_i]
+
+        return metric_fn(x, y)
+
+    return w
+
+
+def pairwise_distance_old(ensemble: list, metric, precompute=None):
     """
     Compute pairwise distance between elements in ensemble
     :param ensemble: list of np.array
-    :param metric:
+    :param metric: distance metric to compute the distance between two elements of the ensemble.
+        metric(a, b) = distance between a and b
     :param precompute:
     :return:
     """
@@ -96,5 +118,34 @@ def pairwise_distance(ensemble: list, metric=np.linalg.norm, precompute=None):
 
     # compute pairwise distances
     sim_mat = squareform(pdist(e_rect, metric=metric_wrapper(shapes, metric)))
+
+    return sim_mat
+
+
+def pairwise_distance(ensemble: list, metric, precompute=None):
+    """
+    Compute pairwise distance between elements in ensemble.
+    Has far less memory overhead since no rectangular matrix of the input is needed.
+    Prefer this over pairwise_distance_old
+    :param ensemble: list of np.array
+    :param metric: distance metric to compute the distance between two elements of the ensemble.
+        metric(a, b) = distance between a and b
+    :param precompute:
+    :return:
+    """
+    # perform possible precomputations of the metric to avoid this in during the pairwise distance metric
+    if precompute is not None:
+        ensemble = list(map(precompute, ensemble))
+
+    # handle scalars
+    for i in range(len(ensemble)):
+        if type(ensemble[i]) == int or type(ensemble[i]) == float:
+            ensemble[i] = np.array([ensemble[i]])
+
+    t = np.arange(len(ensemble))
+    t = t.reshape((len(t), 1))
+
+    # compute pairwise distances
+    sim_mat = squareform(pdist(t, metric=metric_wrapper_with_closure(ensemble, metric)))
 
     return sim_mat
