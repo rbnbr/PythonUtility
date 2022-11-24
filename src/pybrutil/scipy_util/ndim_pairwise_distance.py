@@ -89,6 +89,27 @@ def metric_wrapper_with_closure(ensemble: list, metric_fn):
     return w
 
 
+def metric_wrapper_with_closure_and_index_passthrough(ensemble: list, metric_fn):
+    """
+    Scipy pairwise distance expects a feature vector but in my use cases, sometimes the feature is a matrix.
+    Thus, I give scipy just a vector of [0, 1, 2, ..., length_of_ensemble-1] and retrieve the actual data provided by this id.
+    This wrapper returns a metric which expects two indices which are then used to retrieve the actual data to finally call the actual metric.
+
+    The returned function expects input from np.arange(length_of_ensemble).reshape(length_of_ensemble, 1).
+    """
+    def w(x_idx, y_idx):
+        # reverse transform_to_rect_flat_array changes
+        x_i = int(x_idx.item())
+        y_i = int(y_idx.item())
+
+        x = ensemble[x_i]
+        y = ensemble[y_i]
+
+        return metric_fn(x, y, x_i, y_i)
+
+    return w
+
+
 def pairwise_distance_old(ensemble: list, metric, precompute=None):
     """
     Compute pairwise distance between elements in ensemble
@@ -122,7 +143,7 @@ def pairwise_distance_old(ensemble: list, metric, precompute=None):
     return sim_mat
 
 
-def pairwise_distance(ensemble: list, metric, precompute=None):
+def pairwise_distance(ensemble: list, metric, precompute=None, metric_with_ensemble_index=False):
     """
     Compute pairwise distance between elements in ensemble.
     Has far less memory overhead since no rectangular matrix of the input is needed.
@@ -131,6 +152,8 @@ def pairwise_distance(ensemble: list, metric, precompute=None):
     :param metric: distance metric to compute the distance between two elements of the ensemble.
         metric(a, b) = distance between a and b
     :param precompute:
+    :param metric_with_ensemble_index: if true, the metric is called with metric(a, b, a_idx, b_idx) instead of
+        metric(a, b). a and b are elements of ensemble and a_idx, b_idx are the indices in the ensemble list of a and b.
     :return:
     """
     # perform possible precomputations of the metric to avoid this in during the pairwise distance metric
@@ -146,6 +169,9 @@ def pairwise_distance(ensemble: list, metric, precompute=None):
     t = t.reshape((len(t), 1))
 
     # compute pairwise distances
-    sim_mat = squareform(pdist(t, metric=metric_wrapper_with_closure(ensemble, metric)))
+    if metric_with_ensemble_index:
+        sim_mat = squareform(pdist(t, metric=metric_wrapper_with_closure_and_index_passthrough(ensemble, metric)))
+    else:
+        sim_mat = squareform(pdist(t, metric=metric_wrapper_with_closure(ensemble, metric)))
 
     return sim_mat
