@@ -2,7 +2,7 @@ import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
 
-def fill_array_with(to_be_filled: np.array, data: np.array, offsets=None):
+def fill_array_with(to_be_filled: np.ndarray, data: np.ndarray, offsets=None):
     """
     Fills the array to_be_filled with the data of the array data starting at provided offsets in to_be_filled
     :param to_be_filled:
@@ -21,7 +21,7 @@ def fill_array_with(to_be_filled: np.array, data: np.array, offsets=None):
     return to_be_filled
 
 
-def resample_array_to_shape(array: np.array, new_shape, method="linear"):
+def resample_array_to_shape(array: np.ndarray, new_shape, method="linear"):
     """
     Resamples the array to the provided shape using RegularGridInterpolator with specified method
     :param array:
@@ -40,16 +40,16 @@ def resample_array_to_shape(array: np.array, new_shape, method="linear"):
     return interp(tuple(new_grid)).astype(array.dtype)
 
 
-def interp_variables(x: np.array, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255), in_place=False):
+def interp_variables(x: np.ndarray, xp=lambda x, i: (x.min(), x.max()), fp=lambda x, i: (0, 255), in_place=False):
     """
     Rescales the values of x with respect to each variable of the last axis.
 
     xp and fp are evaluated for value in range(x.shape[-1]) and called with arguments: (x[:, ..., :, i], i)
 
     :param in_place: if not in_place, calls x.copy() before altering x.
-    :param x: np.array
-    :param xp: func(x: np.array, index: int) -> tuple(number, number)
-    :param fp: func(x: np.array, index: int) -> tuple(number, number)
+    :param x: np.ndarray
+    :param xp: func(x: np.ndarray, index: int) -> tuple(number, number)
+    :param fp: func(x: np.ndarray, index: int) -> tuple(number, number)
     :return:
     """
     if not in_place:

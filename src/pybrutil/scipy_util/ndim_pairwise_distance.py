@@ -77,7 +77,6 @@ def metric_wrapper_with_closure(ensemble: list, metric_fn):
     The returned function expects input from np.arange(length_of_ensemble).reshape(length_of_ensemble, 1).
     """
     def w(x_idx, y_idx):
-        # reverse transform_to_rect_flat_array changes
         x_i = int(x_idx.item())
         y_i = int(y_idx.item())
 
@@ -98,7 +97,6 @@ def metric_wrapper_with_closure_and_index_passthrough(ensemble: list, metric_fn)
     The returned function expects input from np.arange(length_of_ensemble).reshape(length_of_ensemble, 1).
     """
     def w(x_idx, y_idx):
-        # reverse transform_to_rect_flat_array changes
         x_i = int(x_idx.item())
         y_i = int(y_idx.item())
 
@@ -113,7 +111,7 @@ def metric_wrapper_with_closure_and_index_passthrough(ensemble: list, metric_fn)
 def pairwise_distance_old(ensemble: list, metric, precompute=None):
     """
     Compute pairwise distance between elements in ensemble
-    :param ensemble: list of np.array
+    :param ensemble: list of np.ndarray
     :param metric: distance metric to compute the distance between two elements of the ensemble.
         metric(a, b) = distance between a and b
     :param precompute:
@@ -148,7 +146,7 @@ def pairwise_distance(ensemble: list, metric, precompute=None, metric_with_ensem
     Compute pairwise distance between elements in ensemble.
     Has far less memory overhead since no rectangular matrix of the input is needed.
     Prefer this over pairwise_distance_old
-    :param ensemble: list of np.array
+    :param ensemble: list of np.ndarray
     :param metric: distance metric to compute the distance between two elements of the ensemble.
         metric(a, b) = distance between a and b
     :param precompute:
